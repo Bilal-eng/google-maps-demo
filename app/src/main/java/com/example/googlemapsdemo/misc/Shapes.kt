@@ -3,10 +3,20 @@ package com.example.googlemapsdemo.misc
 import android.graphics.Color
 import com.example.googlemapsdemo.R
 import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.model.BitmapDescriptor
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.android.gms.maps.model.ButtCap
 import com.google.android.gms.maps.model.CircleOptions
+import com.google.android.gms.maps.model.CustomCap
+import com.google.android.gms.maps.model.Dash
+import com.google.android.gms.maps.model.Dot
+import com.google.android.gms.maps.model.Gap
+import com.google.android.gms.maps.model.JointType
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PolygonOptions
 import com.google.android.gms.maps.model.PolylineOptions
+import com.google.android.gms.maps.model.RoundCap
+import com.google.android.gms.maps.model.SquareCap
 import kotlinx.coroutines.delay
 
 class Shapes {
@@ -26,47 +36,44 @@ class Shapes {
     private val p03 = LatLng(33.95183953811274, -118.4213935804775)
 
 
-    private suspend fun addPolyline(map: GoogleMap) {
-        val polyline = map.addPolyline(
-            PolylineOptions().apply {
-                add(losAngeles, newYork, madrid)
-                width(5f)
-                color(Color.BLUE)
-                geodesic(true)
-                clickable(true)
-            }
-        )
+    suspend fun addPolyline(map: GoogleMap) {
+
+        val pattern = listOf(Dot(), Gap(30f))
+
+        val polyline = map.addPolyline(PolylineOptions().apply {
+            add(losAngeles, newYork, madrid)
+            width(120f)
+            color(Color.BLUE)
+            geodesic(true)
+            jointType(JointType.ROUND)
+            startCap(CustomCap(BitmapDescriptorFactory.fromResource(R.drawable.custom_marker), 100f))
+            endCap(ButtCap())
+        })
         delay(5000L)
         polyline.points = listOf(losAngeles, panama, madrid)
     }
 
     fun addPolygon(map: GoogleMap) {
-        val polygon = map.addPolygon(
-            PolygonOptions().apply {
-                add(p0, p1, p2, p3)
-                fillColor(R.color.black)
-                strokeColor(R.color.black)
-            }
-        )
+        val polygon = map.addPolygon(PolygonOptions().apply {
+            add(p0, p1, p2, p3)
+            fillColor(R.color.black)
+            strokeColor(R.color.black)
+        })
 
-        val polygon2 = map.addPolygon(
-            PolygonOptions().apply {
-                add(p00, p01, p02, p03)
-                fillColor(R.color.black)
-                strokeColor(R.color.black)
-            }
-        )
+        val polygon2 = map.addPolygon(PolygonOptions().apply {
+            add(p00, p01, p02, p03)
+            fillColor(R.color.black)
+            strokeColor(R.color.black)
+        })
     }
 
     suspend fun addCircle(map: GoogleMap) {
-        val circle = map.addCircle(
-            CircleOptions().apply {
-                center(losAngeles)
-                radius(50000.0)
-                fillColor(R.color.purple_500)
-                strokeColor(R.color.purple_500)
-            }
-        )
+        val circle = map.addCircle(CircleOptions().apply {
+            center(losAngeles)
+            radius(50000.0)
+            fillColor(R.color.purple_500)
+            strokeColor(R.color.purple_500)
+        })
 
         delay(4000L)
 
