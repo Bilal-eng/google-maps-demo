@@ -56,8 +56,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             isZoomControlsEnabled = true
         }
         typeAndStyle.setMapStyle(map, this)
-        shapes.addPolygon(map)
+
         lifecycleScope.launch {
+            shapes.addCircle(map)
         }
     }
 }
