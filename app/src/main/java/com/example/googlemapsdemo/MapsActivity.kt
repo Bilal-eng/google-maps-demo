@@ -1,34 +1,27 @@
 package com.example.googlemapsdemo
 
-import android.graphics.Color
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.googlemapsdemo.misc.CameraAndViewport
+import com.example.googlemapsdemo.misc.Shapes
 import com.example.googlemapsdemo.misc.TypeAndStyle
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.GoogleMap.OnPolylineClickListener
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import com.google.android.gms.maps.model.Polyline
-import com.google.android.gms.maps.model.PolylineOptions
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class MapsActivity : AppCompatActivity(), OnMapReadyCallback, OnPolylineClickListener {
+class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var map: GoogleMap
     private val typeAndStyle by lazy { TypeAndStyle() }
     private val cameraAndViewport by lazy { CameraAndViewport() }
     private val losAngeles = LatLng(34.04692127928215, -118.24748421830992)
-    private val newYork = LatLng(40.712776, -74.005974)
-    private val madrid = LatLng(40.42532590430832, -3.69053406427674)
-    private val panama = LatLng(8.193200659375682, -9.482956329437389)
+    private val shapes by lazy { Shapes() }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,31 +56,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, OnPolylineClickLis
             isZoomControlsEnabled = true
         }
         typeAndStyle.setMapStyle(map, this)
-        map.setOnPolylineClickListener(this)
-
+        shapes.addPolygon(map)
         lifecycleScope.launch {
-            addPolyline()
         }
-    }
-
-    private suspend fun addPolyline() {
-        val polyline = map.addPolyline(
-            PolylineOptions().apply {
-                add(losAngeles, newYork, madrid)
-                width(5f)
-                color(Color.BLUE)
-                geodesic(true)
-                clickable(true)
-            }
-        )
-        delay(5000L)
-        val newList = listOf(
-            losAngeles, panama, madrid
-        )
-        polyline.points = newList
-    }
-
-    override fun onPolylineClick(p0: Polyline) {
-        Toast.makeText(this, "Clicked", Toast.LENGTH_SHORT).show()
     }
 }
