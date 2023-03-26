@@ -1,11 +1,13 @@
 package com.example.googlemapsdemo
 
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.googlemapsdemo.misc.CameraAndViewport
+import com.example.googlemapsdemo.misc.Overlays
 import com.example.googlemapsdemo.misc.Shapes
 import com.example.googlemapsdemo.misc.TypeAndStyle
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -14,6 +16,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -22,6 +25,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private val cameraAndViewport by lazy { CameraAndViewport() }
     private val losAngeles = LatLng(34.04692127928215, -118.24748421830992)
     private val shapes by lazy { Shapes() }
+    private val overlays by lazy { Overlays() }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,8 +61,13 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         }
         typeAndStyle.setMapStyle(map, this)
 
+//        val groundOverlay = overlays.addGroundOverlay(map)
+        val groundOverlay = overlays.addGroundOverlayWithTag(map)
+
         lifecycleScope.launch {
-            shapes.addPolyline(map)
+            delay(8000L)
+//            groundOverlay?.transparency = 0.5f
+            Log.d("Maps", groundOverlay?.tag.toString())
         }
     }
 }
